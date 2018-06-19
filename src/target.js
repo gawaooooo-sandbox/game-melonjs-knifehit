@@ -1,36 +1,28 @@
-game.Target = me.Sprite.extend({
-    init: function() {
-        console.log("target init");
+game.Target = me.Entity.extend({
+    init: function(x, y) {
+        console.log("target entity init", x, y);
         const image = me.loader.getImage("target");
-        this._super(me.Sprite, "init", [
-            me.game.viewport.width / 2,
-            400,
-            { image: image }
+        // call the super constructor
+        this._super(me.Entity, "init", [
+            x,
+            y,
+            {
+                width: image.width,
+                height: image.height
+            }
         ]);
+        // TODO: collision type? setVelocity?
 
-        // this.alwaysUpdate = true;
+        // create a renderable
+        this.renderable = new me.Sprite(0, 0, { image: image });
+        this.anchorPoint.set(0.5, 0.5);
+
+        // this.body.setVelocity(0, 0);
+        // this.body.collisionType = me.collision.types.ACTION_OBJECT;
     },
-    onActivateEvent: function() {
-        console.log(" target onActivate ");
-        // this.currentTransform.identity();
-        // this.anchorPoint.set(0.5, 0.5);
-        // this.autoTransform = true;
-
-        console.log(this.image.width);
-        console.info(this);
-        console.log(Math.PI);
-    },
-    update: function(time) {
-        // console.log(" game.target update ");
-        this._super(me.Sprite, "update", [time]);
-
-        this.currentTransform.translate(me.game.viewport.width / 2, 400);
-        this.currentTransform.rotate((3 / 180) * Math.PI);
-        this.currentTransform.translate(-me.game.viewport.width / 2, -400);
-
+    update: function() {
+        this.renderable.currentTransform.rotate((3 / 180) * Math.PI);
+        // this.body.update();
         return true;
-    },
-    test: function() {
-        console.log("call pointerdown !!!");
     }
 });

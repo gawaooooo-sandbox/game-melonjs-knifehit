@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="screen"></div>
+    <script type="text/javascript" src="lib/melonjs.js"></script>
+    <script type="text/javascript" src="lib/plugins/debug/debugPanel.js"></script>
+    <script>
+        // init the melonJS Library
+        me.boot();
+
+        // game template
+        const game = {
+            // assets to preload
+            assets: [{
+                name: 'target',
+                type: 'image',
+                src: './images/target.png'
+            }],
+
+            // run on page load
+            onload: function () {
+                // Initialize the video
+                if (!me.video.init(960, 640, {
+                    wrapper: "screen",
+                    scale: "auto"
+                })) {
+                    alert("Your browser does not support HTML5 canvas.");
+                    return;
+                }
+
+                // add "#debug" to the URL to enable the debug Panel
+                if (me.game.HASH.debug === true) {
+                    window.onReady(function () {
+                        me.plugin.register.defer(
+                            this,
+                            me.debug.Panel,
+                            "debug",
+                            me.input.KEY.V
+                        );
+                    });
+                }
+
+                // set and load all resources
+                // automatically switch to the loading screen
+                me.loader.preload(game.assets, this.loaded.bind(this));
+            },
+            loaded: function () {
+                me.pool.register('target', game.TargetEntity);
+
+                console.log(`me.game.viewport.width ${me.game.viewport.width}, me.game.viewport.height ${me.game.viewport.height}`);
+
+                var PlayScreen = me.ScreenObject.extend({
+                    // on reset event function
+                    onResetEvent: function () {
+                        // black background
+                        me.game.world.addChild(new me.ColorLayer("background", "#202020"), 0);
+
+                        const x = me.game.viewport.width / 2 - 306 / 2;
+                        const y = me.game.viewport.height / 2 - 306 / 2;
+
+                        var target = me.pool.pull('target', x, y);
+                        // var target = new game.TargetEntity(345, 170,"target");
+
+                        me.game.world.addChild(target, 1);
+
+                        var maxAngle = 5;
+                        var tween = new me.Tween(target).to(
+                            { x: 200, currentAngle: maxAngle },
+                            8000
+                        ).onUpdate(
+                            function (val) {
+                                console.log(target.currentAngle, val * maxAngle, (1 - val) * maxAngle)
+                            }
+                        ).easing(me.Tween.Easing.Quadratic.InOut).repeat(Infinity).yoyo(true).start();
+                    }
+                });
+
+                // set the "Play/Ingame" Screen Object
+                me.state.set(me.state.PLAY, new PlayScreen());
+                // switch to PLAY state
+                me.state.change(me.state.PLAY);
+            }
+        }
+
+
+        /**
+         * a basic sprite object
+         */
+        game.TargetEntity = me.Entity.extend({
+            init: function (x, y, imageName) {
+                var image = me.loader.getImage("target");
+                console.log(image.width, image.height);
+                // call the super constructor
+                this._super(me.Entity, "init", [x, y, {
+                    width: image.width,
+                    height: image.height
+                }]);
+                // create a renderable
+                this.renderable = new me.Sprite(0, 0, {
+                    image: image
+                });
+                this.anchorPoint.set(0.5, 0.5);
+                this.currentAngle = 0;
+                this.prevAngle = 0;
+            },
+            update: function () {
+                this.renderable.currentTransform.rotate(this.currentAngle - this.prevAngle);
+                this.prevAngle = this.currentAngle;
+                return true;
+            }
+        });
+
+        // <!-- run the game boostrap -->
+        game.onload();
+    </script>
+</body>
+</html>

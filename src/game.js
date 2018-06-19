@@ -33,16 +33,13 @@ const game = {
         // (this will also automatcally switch to the loading screen)
         me.loader.preload(game.resources, this.loaded.bind(this));
 
-        // Load the resources.
-        me.loader.preload(game.resources);
-        
         // Initialize melonJS and display a loading screen.
         me.state.change(me.state.LOADING);
     },
     // Run on game resources loade.
     loaded: function() {
         console.log(" preloaded ... ");
-        me.pool.register("target", game.Target);
+        me.pool.register("targetEntity", game.Target);
         me.pool.register("knife", game.Knife);
 
         // set the 'Play/Ingame' Screen Object
