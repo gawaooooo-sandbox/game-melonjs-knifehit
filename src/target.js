@@ -1,4 +1,4 @@
-game.Target = me.Entity.extend({
+game.TargetEntity = me.Entity.extend({
     init: function(x, y) {
         console.log("target entity init", x, y);
         const image = me.loader.getImage("target");

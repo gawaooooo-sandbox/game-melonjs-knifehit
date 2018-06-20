@@ -121,6 +121,8 @@ game.Knife = me.Entity.extend({
         this.pos.y = (me.game.viewport.height / 5) * 4 - this.height / 2;
         game.playScreen.setCanThrow(true);
     },
+
+    // TODO : onCollisionでtrueを返すかfalseを返すか
     onCollision: function(response, other) {
         console.log(`knife oncollisiont ${this.body.collisionType}`);
         console.log(`othre.bodhy.collisionType: ${other.body.collisionType}`);
@@ -176,6 +178,6 @@ game.Knife = me.Entity.extend({
         }
 
 */
-        return true;
+        return false;
     }
 });

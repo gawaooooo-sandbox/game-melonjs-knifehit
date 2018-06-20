@@ -12,10 +12,10 @@ const game = {
             alert("Your browser does not support HTML5 canvas.");
             return;
         }
-        // TODO: debug??
+
         // add "#debug" to the URL to enable the debug Panel
         if (me.game.HASH.debug === true) {
-            window.onReady(function() {
+            me.device.onReady(function() {
                 me.plugin.register.defer(
                     this,
                     me.debug.Panel,
@@ -24,10 +24,6 @@ const game = {
                 );
             });
         }
-
-        // TODO: audio
-        // Initialize the audio
-        // me.audio.init('mp3,ogg');
 
         // set and load all resources.
         // (this will also automatcally switch to the loading screen)
@@ -39,8 +35,9 @@ const game = {
     // Run on game resources loade.
     loaded: function() {
         console.log(" preloaded ... ");
-        me.pool.register("targetEntity", game.Target);
-        me.pool.register("knife", game.Knife);
+        // TODO: entity
+        me.pool.register("target", game.TargetEntity);
+        me.pool.register("throwingKnife", game.ThrowingKnifeEntity);
 
         // set the 'Play/Ingame' Screen Object
         this.playScreen = new game.PlayScreen();

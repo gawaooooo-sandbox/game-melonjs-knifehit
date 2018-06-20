@@ -6,23 +6,24 @@ game.PlayScreen = me.ScreenObject.extend({
 
         const targetImage = me.loader.getImage("target");
         this.target = me.pool.pull(
-            "targetEntity",
+            "target",
             me.game.viewport.width / 2 - targetImage.width / 2,
             400 - targetImage.height / 2
         );
+
         this.knifeImage = me.loader.getImage("knife");
-        this.knife = me.pool.pull(
-            "knife",
+        this.throwingKnife = me.pool.pull(
+            "throwingKnife",
             me.game.viewport.width / 2 - 0.5 - this.knifeImage.width / 2,
             (me.game.viewport.height / 5) * 4 - this.knifeImage.height / 2,
-            true
+            this.target
         );
 
-        this.knifeManager = new game.KnifeManager();
+        // this.knifeManager = new game.KnifeManager();
 
-        me.game.world.addChild(this.knife, 1);
+        me.game.world.addChild(this.throwingKnife, 1);
         me.game.world.addChild(this.target, 2);
-        me.game.world.addChild(this.knifeManager, 1);
+        // me.game.world.addChild(this.knifeManager, 1);
 
         // registere on the 'pointerdown' event
         me.input.registerPointerEvent(
@@ -30,8 +31,6 @@ game.PlayScreen = me.ScreenObject.extend({
             me.game.viewport,
             this.pointerDown.bind(this)
         );
-
-        this.canThrow = true;
     },
     pointerDown: function(pointer) {
         // TODO: なんとかマネージャー？つかたほうがいいのかも
@@ -44,21 +43,19 @@ game.PlayScreen = me.ScreenObject.extend({
         console.log(" call set can throw ");
         this.canThrow = isCanThrow;
     },
-    getCanThrow: function() {
-        return this.canThrow;
-    },
-
-    // TODO: ここでいいのか、、
+    // TODO:
     thrownKnife: function() {
+        console.group("playScreen");
         console.log(" call thrownKnife ");
 
-        if (!this.canThrow) {
+        if (!this.throwingKnife.isCanThrow()) {
             console.log(" not throw knife ");
             return;
         }
-        this.canThrow = false;
 
-        this.knife.thrown(this.target);
+        this.throwingKnife.throw();
+
+        console.groupEnd();
     },
 
     // action to perform when leaving this screen (state change)
