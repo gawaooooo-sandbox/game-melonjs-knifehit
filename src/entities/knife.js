@@ -16,7 +16,7 @@ game.KnifeEntity = me.Entity.extend({
         // create a renderable
         this.renderable = new me.Sprite(0, 0, { image: image });
 
-        this.collide = false;
+        this.isCollide = false;
 
         this.target = target;
 
@@ -35,15 +35,22 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
 
         this.thrownTween = null;
 
+        this.isLeagalHit = true;
+
         this.canThrow = true;
 
         console.groupEnd();
     },
     update: function(dt) {
         // TODO: test
-        if (this.collide) {
+        if (this.isCollide) {
             // this.stopThrowTween();
             return false;
+        }
+
+        // 刺さっているナイフに当たったときのアニメーション
+        if (!this.isLeagalHit) {
+            this.renderable.currentTransform.rotate((8 / 180) * Math.PI);
         }
 
         me.collision.check(this);
@@ -60,8 +67,13 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
         console.log(`other.type: ${other.type}`);
 
         // TODO: test
-        this.collide = true;
-        this.stopThrowTween();
+        // if (other.type === "target") {
+        //     this.collide = true;
+        //     this.stopThrowTween();
+        // } else {
+        this.isLeagalHit = false;
+        this.fallOutTween();
+        // }
 
         console.groupEnd();
 
@@ -114,14 +126,31 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
             .to({ y: (me.game.viewport.height / 5) * 4 - this.height / 2 }, 150)
             .onComplete(() => {
                 this.canThrow = true;
-                this.collide = false;
+                this.isCollide = false;
                 console.log(
                     `stop thrown tween onComplete ${this.canThrow}, collide ${
-                        this.collide
+                        this.isCollide
                     }`
                 );
             });
         this.thrownTween.start();
+
+        console.groupEnd();
+    },
+    fallOutTween: function() {
+        console.group("knife");
+        console.log("---- stopThrowTween ----");
+
+        this.thrownTween.stop();
+
+        this.thrownTween = me.pool
+            .pull("me.Tween", this.pos)
+            .to({ y: me.game.viewport.height + this.height })
+            .onComplete(() => {
+                console.log("--- complete knife fall out ----- ");
+                game.playScreen.reset();
+            })
+            .start();
 
         console.groupEnd();
     },
