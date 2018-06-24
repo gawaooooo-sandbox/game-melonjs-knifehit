@@ -38,6 +38,8 @@ const game = {
         // TODO: entity
         me.pool.register("target", game.TargetEntity);
         me.pool.register("throwingKnife", game.ThrowingKnifeEntity);
+        me.pool.register("hitKnifeManager", game.HitKnifeManager);
+        me.pool.register("hitKnife", game.HitKnifeEntity, true);
 
         // set the 'Play/Ingame' Screen Object
         this.playScreen = new game.PlayScreen();

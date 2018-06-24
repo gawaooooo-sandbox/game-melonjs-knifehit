@@ -11,6 +11,11 @@ game.PlayScreen = me.ScreenObject.extend({
             400 - targetImage.height / 2
         );
 
+        console.log(this.target.pos.x, this.target.pos.y);
+        console.log(this.target.width, this.target.height);
+        console.log(this.target.pos.x + (this.target.width / 2));
+        console.log(this.target.pos.y + (this.target.height / 2));
+
         this.knifeImage = me.loader.getImage("knife");
         this.throwingKnife = me.pool.pull(
             "throwingKnife",
@@ -18,10 +23,18 @@ game.PlayScreen = me.ScreenObject.extend({
             (me.game.viewport.height / 5) * 4 - this.knifeImage.height / 2,
             this.target
         );
+        // this.throwingKnife = me.pool.pull(
+        //     "throwingKnife",
+        //     this.target.pos.x + this.target.width / 2,
+        //     this.target.pos.y + this.target.height,
+        //     this.target
+        // );
+
+        this.hitKnifeManager = me.pool.pull('hitKnifeManager');
 
         // this.knifeManager = new game.KnifeManager();
-
-        me.game.world.addChild(this.throwingKnife, 1);
+        // me.game.world.addChild(this.hitKnifeManager, 0);
+        me.game.world.addChild(this.throwingKnife, 2);
         me.game.world.addChild(this.target, 2);
         // me.game.world.addChild(this.knifeManager, 1);
 
@@ -39,19 +52,10 @@ game.PlayScreen = me.ScreenObject.extend({
 
         return false;
     },
-    setCanThrow: function(isCanThrow) {
-        console.log(" call set can throw ");
-        this.canThrow = isCanThrow;
-    },
     // TODO:
     thrownKnife: function() {
         console.group("playScreen");
         console.log(" call thrownKnife ");
-
-        if (!this.throwingKnife.isCanThrow()) {
-            console.log(" not throw knife ");
-            return;
-        }
 
         this.throwingKnife.throw();
 
