@@ -35,7 +35,7 @@ const game = {
     // Run on game resources loade.
     loaded: function() {
         console.log(" preloaded ... ");
-        // TODO: entity
+
         me.pool.register("target", game.TargetEntity);
         me.pool.register("throwingKnife", game.ThrowingKnifeEntity);
         me.pool.register("hitKnifeManager", game.HitKnifeManager);
@@ -44,8 +44,6 @@ const game = {
         // set the 'Play/Ingame' Screen Object
         this.playScreen = new game.PlayScreen();
         me.state.set(me.state.PLAY, this.playScreen);
-
-        console.info(me.state);
 
         // Start the game
         me.state.change(me.state.PLAY);
