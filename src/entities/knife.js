@@ -13,16 +13,11 @@ game.KnifeEntity = me.Entity.extend({
         this.renderable = new me.Sprite(0, 0, { image: image });
 
         this.target = target;
-
-        console.groupEnd();
     }
 });
 
 game.HitKnifeManager = me.Renderable.extend({
     init: function() {
-        // console.group("hitknifeMnager");
-        // console.log("----- HitKnifeManager init -----");
-
         this._super(me.Renderable, "init", [
             0,
             0,
@@ -31,17 +26,10 @@ game.HitKnifeManager = me.Renderable.extend({
         ]);
 
         this.hitKnifes = [];
-
-        console.groupEnd();
     },
     hit: function(throwKnife, target) {
-        // console.group("hitknifeMnager");
-        // console.log("----- HitKnifeManager hit -----");
-
         const x = throwKnife.pos.x;
         const y = throwKnife.pos.y;
-
-        // console.log(`knifeposition x: ${x}, positionY: ${y}`);
 
         const knife = me.pool.pull(
             "hitKnife",
@@ -54,17 +42,11 @@ game.HitKnifeManager = me.Renderable.extend({
         this.hitKnifes.push(knife);
 
         me.game.world.addChild(knife, 1);
-
-        // console.groupEnd();
     }
 });
 
 game.HitKnifeEntity = game.KnifeEntity.extend({
     init: function(x, y, target, num) {
-        // console.group("hitknife");
-        // console.log("----- HitKnifeEntity init -----");
-        // console.log(`hit knife entity init: ${x}, ${y}, ${num}`);
-
         this._super(game.KnifeEntity, "init", [x, y, target]);
 
         this.target = target;
@@ -73,8 +55,6 @@ game.HitKnifeEntity = game.KnifeEntity.extend({
         this.angle = 90;
 
         this.anchorPoint.set(0, 0.5);
-
-        // console.groupEnd();
     },
     update: function(dt) {
         this.angle += 3;
@@ -98,9 +78,6 @@ game.HitKnifeEntity = game.KnifeEntity.extend({
 
 game.ThrowingKnifeEntity = game.KnifeEntity.extend({
     init: function(x, y, target) {
-        // console.group("knife");
-        // console.log("----- ThrowingKnifeEntity init -----");
-        // console.log(`throwing knife entity init: ${x}, ${y}, ${target}`);
         this._super(game.KnifeEntity, "init", [x, y, target]);
 
         this.type = "throwing";
@@ -110,13 +87,8 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
         this.isLeagalHit = true;
 
         this.canThrow = true;
-
-        // console.groupEnd();
     },
     throw: function() {
-        // console.group("knife");
-        // console.log("----- throw -----");
-
         if (!this.target) {
             console.log("need target object");
             return;
@@ -144,8 +116,6 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
                 // console.log(" knife thrown tween complete ");
             });
         this.thrownTween.start();
-
-        // console.groupEnd();
     },
     update: function(dt) {
         // 刺さっているナイフに当たったときのアニメーション
@@ -157,12 +127,6 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
         return true;
     },
     onCollision: function(response, other) {
-        // console.group("knife");
-        // console.log("----- onCollision -----");
-        // console.log(`other.type: ${other.type}`);
-
-        // console.log(`collision type : ${this.body.collisionType}`);
-
         this.body.setCollisionMask(me.collision.types.NO_OBJECT);
 
         // 丸太に当たった場合はナイフを刺した状態にする
@@ -179,16 +143,11 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
             this.fallOutTween();
         }
 
-        console.groupEnd();
-
         // not solid
         return false;
     },
 
     stopThrowTween: function() {
-        // console.group("knife");
-        // console.log("---- stopThrowTween ----");
-
         this.thrownTween.stop();
 
         // ナイフを初期位置に戻す
@@ -200,13 +159,8 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
                 this.body.setCollisionMask(me.collision.types.ENEMY_OBJECT);
             });
         this.thrownTween.start();
-
-        // console.groupEnd();
     },
     fallOutTween: function() {
-        // console.group("knife");
-        // console.log("---- stopThrowTween ----");
-
         this.thrownTween.stop();
 
         this.thrownTween = me.pool
@@ -217,8 +171,6 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
                 game.playScreen.reset();
             })
             .start();
-
-        // console.groupEnd();
     },
     isCanThrow: function() {
         return this.canThrow;
