@@ -1,5 +1,5 @@
 game.KnifeEntity = me.Entity.extend({
-    init: function(x, y, target) {
+    init: function(x, y, target, anchorX, anchorY) {
         const image = me.loader.getImage("knife");
         const settings = {
             image: image,
@@ -8,6 +8,9 @@ game.KnifeEntity = me.Entity.extend({
         };
 
         this._super(me.Entity, "init", [x, y, settings]);
+        anchorX = anchorX || 0;
+        anchorY = anchorY || 0;
+        this.anchorPoint.set(anchorX, anchorY);
 
         // create a renderable
         this.renderable = new me.Sprite(0, 0, { image: image });
@@ -47,25 +50,22 @@ game.HitKnifeManager = me.Renderable.extend({
 
 game.HitKnifeEntity = game.KnifeEntity.extend({
     init: function(x, y, target, num) {
-        this._super(game.KnifeEntity, "init", [x, y, target]);
+        this._super(game.KnifeEntity, "init", [x, y, target, 0.5, 0.5]);
 
         this.target = target;
         this.type = "hit";
         this.id = num;
-        this.angle = 90;
-
-        this.anchorPoint.set(0, 0.5);
+        this.angle = 0;
     },
     update: function(dt) {
         this.angle += 3;
+        const rad = Number.prototype.degToRad(this.angle + 90);
 
-        const rad = Number.prototype.degToRad(this.angle);
-        const x =
-            (this.target.width / 2) * Math.cos(rad) +
-            me.game.viewport.width / 2;
-        const y =
-            (this.target.width / 2) * Math.sin(rad) +
-            (400 - this.target.height / 2);
+        // 回転時の中心を調整
+        const x = this.target.width / 2 * Math.cos(rad) +
+             (this.target.pos.x + this.target.width / 2) - this.width / 2;
+        const y = this.target.height / 2 * Math.sin(rad) + 
+            this.target.pos.y + this.height / 6;
 
         this.pos.x = x;
         this.pos.y = y;
@@ -107,8 +107,9 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
                 {
                     y:
                         this.target.pos.y +
-                        this.target.width / 2 +
-                        this.height / 2
+                        this.target.width / 2
+                        //  +
+                        // this.height / 2
                 },
                 150
             )
