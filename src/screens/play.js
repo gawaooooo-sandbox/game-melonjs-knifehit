@@ -15,7 +15,7 @@ game.PlayScreen = me.ScreenObject.extend({
         this.throwingKnife = me.pool.pull(
             "throwingKnife",
             me.game.viewport.width / 2 - 0.5 - this.knifeImage.width / 2,
-            (me.game.viewport.height / 5) * 4 - this.knifeImage.height / 2,
+            (me.game.viewport.height / 5) * 4,
             this.target
         );
 

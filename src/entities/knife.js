@@ -62,10 +62,14 @@ game.HitKnifeEntity = game.KnifeEntity.extend({
         const rad = Number.prototype.degToRad(this.angle + 90);
 
         // 回転時の中心を調整
-        const x = this.target.width / 2 * Math.cos(rad) +
-             (this.target.pos.x + this.target.width / 2) - this.width / 2;
-        const y = this.target.height / 2 * Math.sin(rad) + 
-            this.target.pos.y + this.height / 6;
+        const x =
+            (this.target.width / 2) * Math.cos(rad) +
+            (this.target.pos.x + this.target.width / 2) -
+            this.width / 2;
+        const y =
+            (this.target.height / 2) * Math.sin(rad) +
+            this.target.pos.y +
+            this.height / 6;
 
         this.pos.x = x;
         this.pos.y = y;
@@ -105,16 +109,14 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
             .pull("me.Tween", this.pos)
             .to(
                 {
-                    y:
-                        this.target.pos.y +
-                        this.target.width / 2
-                        //  +
-                        // this.height / 2
+                    y: this.target.pos.y + this.target.width / 2
+                    //  +
+                    // this.height / 2
                 },
                 150
             )
             .onComplete(() => {
-                // console.log(" knife thrown tween complete ");
+                console.log(" knife thrown tween complete ");
             });
         this.thrownTween.start();
     },
@@ -154,7 +156,7 @@ game.ThrowingKnifeEntity = game.KnifeEntity.extend({
         // ナイフを初期位置に戻す
         this.thrownTween = me.pool
             .pull("me.Tween", this.pos)
-            .to({ y: (me.game.viewport.height / 5) * 4 - this.height / 2 }, 150)
+            .to({ y: (me.game.viewport.height / 5) * 4 }, 150)
             .onComplete(() => {
                 this.canThrow = true;
                 this.body.setCollisionMask(me.collision.types.ENEMY_OBJECT);
